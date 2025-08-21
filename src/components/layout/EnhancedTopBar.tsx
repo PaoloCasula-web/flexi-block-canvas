@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+
+// Fixed Template import issue - using FileText instead
 import { 
   Share, 
   Bell, 
