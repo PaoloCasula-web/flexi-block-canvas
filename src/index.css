@@ -51,6 +51,16 @@
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
     
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 355 7% 97%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
+    --error: 0 84% 60%;
+    --error-foreground: 355 7% 97%;
+    --info: 217 91% 60%;
+    --info-foreground: 355 7% 97%;
+
     /* Content constraints */
     --content-width: 800px;
     --sidebar-width: 240px;
@@ -86,6 +96,12 @@
     --editor-bg: 220 9% 9%;
     --editor-hover: 220 9% 14%;
     --editor-focus: 258 90% 18%;
+    
+    /* Dark mode status colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    --info: 217 91% 60%;
   }
   
   /* Typography Scale */
@@ -114,7 +130,7 @@
   
   /* Keyboard shortcuts styling */
   kbd {
-    @apply px-2 py-1 bg-surface-secondary border border-border rounded text-xs font-mono;
+    @apply px-2 py-1 bg-[hsl(var(--surface-secondary))] border border-[hsl(var(--border))] rounded text-xs font-mono;
   }
 }
 

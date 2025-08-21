@@ -48,8 +48,8 @@ function BlockMenu({ onSelectType, onClose }: BlockMenuProps) {
   ];
 
   return (
-    <div className="absolute top-8 left-0 bg-surface border border-border rounded-md shadow-lg z-10 w-80 p-2 animate-scale-in">
-      <div className="text-xs text-text-secondary p-2 border-b border-border mb-1">
+    <div className="absolute top-8 left-0 bg-[hsl(var(--surface))] border border-[hsl(var(--border))] rounded-md shadow-lg z-50 w-80 p-2 animate-scale-in">
+      <div className="text-xs text-[hsl(var(--text-secondary))] p-2 border-b border-[hsl(var(--border))] mb-1">
         Choose block type
       </div>
       {blockTypes.map((blockType) => (
@@ -59,14 +59,14 @@ function BlockMenu({ onSelectType, onClose }: BlockMenuProps) {
             onSelectType(blockType.type);
             onClose();
           }}
-          className="w-full flex items-center gap-3 p-2 hover:bg-editor-hover rounded text-left transition-colors"
+          className="w-full flex items-center gap-3 p-2 hover:bg-[hsl(var(--editor-hover))] rounded text-left transition-colors"
         >
-          <div className="flex-shrink-0 w-8 h-8 bg-surface-secondary rounded flex items-center justify-center">
-            <blockType.icon className="h-4 w-4 text-text-secondary" />
+          <div className="flex-shrink-0 w-8 h-8 bg-[hsl(var(--surface-secondary))] rounded flex items-center justify-center">
+            <blockType.icon className="h-4 w-4 text-[hsl(var(--text-secondary))]" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-text-primary">{blockType.label}</div>
-            <div className="text-xs text-text-secondary">{blockType.description}</div>
+            <div className="text-sm font-medium text-[hsl(var(--text-primary))]">{blockType.label}</div>
+            <div className="text-xs text-[hsl(var(--text-secondary))]">{blockType.description}</div>
           </div>
         </button>
       ))}
@@ -127,11 +127,11 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
       case 'heading1': return `${baseClasses} text-title-1`;
       case 'heading2': return `${baseClasses} text-title-2`;
       case 'heading3': return `${baseClasses} text-title-3`;
-      case 'quote': return `${baseClasses} text-body border-l-4 border-primary pl-4 italic bg-surface-secondary`;
+      case 'quote': return `${baseClasses} text-body border-l-4 border-[hsl(var(--primary))] pl-4 italic bg-[hsl(var(--surface-secondary))]`;
       case 'bullet-list': return `${baseClasses} text-body pl-6`;
       case 'numbered-list': return `${baseClasses} text-body pl-6`;
       case 'todo': return `${baseClasses} text-body pl-8`;
-      case 'code': return `${baseClasses} text-body font-mono bg-surface-secondary p-3 rounded border`;
+      case 'code': return `${baseClasses} text-body font-mono bg-[hsl(var(--surface-secondary))] p-3 rounded border-[hsl(var(--border))]`;
       case 'callout': return `${baseClasses} text-body p-3 rounded border`;
       default: return `${baseClasses} text-body`;
     }
@@ -181,19 +181,19 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
 
   const getCalloutIcon = () => {
     switch (block.properties?.calloutType) {
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
-      case 'error': return <AlertCircle className="h-4 w-4 text-red-600" />;
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-600" />;
-      default: return <Info className="h-4 w-4 text-blue-600" />;
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-[hsl(var(--warning))]" />;
+      case 'error': return <AlertCircle className="h-4 w-4 text-[hsl(var(--error))]" />;
+      case 'success': return <CheckCircle className="h-4 w-4 text-[hsl(var(--success))]" />;
+      default: return <Info className="h-4 w-4 text-[hsl(var(--info))]" />;
     }
   };
 
   const getCalloutColors = () => {
     switch (block.properties?.calloutType) {
-      case 'warning': return 'bg-yellow-50 border-yellow-200';
-      case 'error': return 'bg-red-50 border-red-200';
-      case 'success': return 'bg-green-50 border-green-200';
-      default: return 'bg-blue-50 border-blue-200';
+      case 'warning': return 'bg-[hsl(var(--warning)/0.1)] border-[hsl(var(--warning)/0.2)]';
+      case 'error': return 'bg-[hsl(var(--error)/0.1)] border-[hsl(var(--error)/0.2)]';
+      case 'success': return 'bg-[hsl(var(--success)/0.1)] border-[hsl(var(--success)/0.2)]';
+      default: return 'bg-[hsl(var(--info)/0.1)] border-[hsl(var(--info)/0.2)]';
     }
   };
 
@@ -206,7 +206,7 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
         onMouseLeave={() => setShowActions(false)}
       >
         <div className="flex items-center">
-          <div className="flex-1 h-px bg-border" />
+          <div className="flex-1 h-px bg-[hsl(var(--border))]" />
         </div>
         
         {/* Actions */}
@@ -232,22 +232,8 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      {/* Drag handle */}
-      <div className="absolute left-0 top-0 transform -translate-x-8">
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab",
-            isActive && "opacity-100"
-          )}
-        >
-          <GripVertical className="h-4 w-4 text-text-tertiary" />
-        </Button>
-      </div>
-
-      {/* Plus button */}
-      <div className="absolute left-0 top-0 transform -translate-x-16">
+      {/* Action buttons - left side */}
+      <div className="absolute left-0 top-0 flex items-center gap-1 transform -translate-x-20">
         <Button
           variant="ghost"
           size="icon"
@@ -257,7 +243,17 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
           )}
           onClick={() => setShowBlockMenu(!showBlockMenu)}
         >
-          <Plus className="h-4 w-4 text-text-tertiary hover:text-text-secondary" />
+          <Plus className="h-4 w-4 text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-primary))]" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab",
+            isActive && "opacity-100"
+          )}
+        >
+          <GripVertical className="h-4 w-4 text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-primary))]" />
         </Button>
       </div>
 
@@ -309,11 +305,11 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
         {/* Todo checkbox */}
         {block.type === 'todo' && (
           <button
-            className="absolute left-2 top-1 w-4 h-4 border border-border rounded flex items-center justify-center hover:bg-surface-secondary"
+            className="absolute left-2 top-1 w-4 h-4 border border-[hsl(var(--border))] rounded flex items-center justify-center hover:bg-[hsl(var(--surface-secondary))] transition-colors"
             onClick={handleTodoToggle}
           >
             {block.properties?.checked && (
-              <CheckSquare className="h-3 w-3 text-primary fill-current" />
+              <CheckSquare className="h-3 w-3 text-[hsl(var(--primary))] fill-current" />
             )}
           </button>
         )}
@@ -327,11 +323,11 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
 
         {/* List bullets/numbers */}
         {block.type === 'bullet-list' && (
-          <span className="absolute left-2 top-1 text-text-secondary">•</span>
+          <span className="absolute left-2 top-1 text-[hsl(var(--text-secondary))]">•</span>
         )}
         
         {block.type === 'numbered-list' && (
-          <span className="absolute left-2 top-1 text-text-secondary text-sm">
+          <span className="absolute left-2 top-1 text-[hsl(var(--text-secondary))] text-sm">
             {blockIndex + 1}.
           </span>
         )}
@@ -346,7 +342,7 @@ function ContentBlock({ block, isActive, pageId, onActivate }: ContentBlockProps
           className={cn(
             getClassName(),
             block.type === 'callout' && 'pl-10',
-            (block.type === 'todo' && block.properties?.checked) && 'line-through text-text-tertiary'
+            (block.type === 'todo' && block.properties?.checked) && 'line-through text-[hsl(var(--text-tertiary))]'
           )}
           rows={1}
         />
@@ -374,7 +370,7 @@ export function ContentEditor({ pageId }: ContentEditorProps) {
     <div className="max-w-3xl mx-auto px-8 py-12 min-h-full">
       {/* Page Icon Selector */}
       <div className="mb-8">
-        <button className="text-5xl hover:bg-editor-hover rounded p-2 transition-colors">
+        <button className="text-5xl hover:bg-[hsl(var(--editor-hover))] rounded p-2 transition-colors">
           {page.icon || '📄'}
         </button>
       </div>
@@ -382,16 +378,16 @@ export function ContentEditor({ pageId }: ContentEditorProps) {
       {/* Content Blocks */}
       <div className="space-y-1">
         {page.content.length === 0 ? (
-          <div className="py-8 text-center text-text-secondary">
+          <div className="py-8 text-center text-[hsl(var(--text-secondary))]">
             <Type className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p className="text-lg mb-2">Start writing...</p>
             <p className="text-sm">
-              Type <kbd className="px-2 py-1 bg-surface-secondary rounded text-xs">/</kbd> to see all block types
+              Type <kbd className="px-2 py-1 bg-[hsl(var(--surface-secondary))] rounded text-xs">/</kbd> to see all block types
             </p>
             <Button
               variant="ghost"
               onClick={handleAddBlock}
-              className="mt-4 gap-2"
+              className="mt-4 gap-2 hover:bg-[hsl(var(--editor-hover))]"
             >
               <Plus className="h-4 w-4" />
               Add a block
@@ -414,7 +410,7 @@ export function ContentEditor({ pageId }: ContentEditorProps) {
               <Button
                 variant="ghost"
                 onClick={handleAddBlock}
-                className="gap-2 text-text-secondary hover:text-text-primary"
+                className="gap-2 text-[hsl(var(--text-secondary))] hover:text-[hsl(var(--text-primary))] hover:bg-[hsl(var(--editor-hover))]"
               >
                 <Plus className="h-4 w-4" />
                 Add a block
