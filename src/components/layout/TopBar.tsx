@@ -10,17 +10,23 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useStore } from "@/lib/store";
+import { Page } from "@/lib/types";
 
 interface TopBarProps {
-  title: string;
-  onTitleChange: (title: string) => void;
+  currentPage: Page | null;
   onToggleSidebar: () => void;
 }
 
-export function TopBar({ title, onTitleChange, onToggleSidebar }: TopBarProps) {
+export function TopBar({ currentPage, onToggleSidebar }: TopBarProps) {
+  const { updatePageTitle } = useStore();
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [tempTitle, setTempTitle] = useState(title);
+  const [tempTitle, setTempTitle] = useState(currentPage?.title || "");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setTempTitle(currentPage?.title || "");
+  }, [currentPage?.title]);
 
   useEffect(() => {
     if (isEditingTitle && inputRef.current) {
@@ -30,13 +36,16 @@ export function TopBar({ title, onTitleChange, onToggleSidebar }: TopBarProps) {
   }, [isEditingTitle]);
 
   const handleTitleClick = () => {
+    if (!currentPage) return;
     setIsEditingTitle(true);
-    setTempTitle(title);
+    setTempTitle(currentPage.title);
   };
 
   const handleTitleSubmit = () => {
+    if (!currentPage) return;
     setIsEditingTitle(false);
-    onTitleChange(tempTitle.trim() || "Untitled");
+    const newTitle = tempTitle.trim() || "Untitled";
+    updatePageTitle(currentPage.id, newTitle);
   };
 
   const handleTitleKeyDown = (e: React.KeyboardEvent) => {
@@ -44,7 +53,7 @@ export function TopBar({ title, onTitleChange, onToggleSidebar }: TopBarProps) {
       handleTitleSubmit();
     } else if (e.key === 'Escape') {
       setIsEditingTitle(false);
-      setTempTitle(title);
+      setTempTitle(currentPage?.title || "");
     }
   };
 
@@ -52,22 +61,26 @@ export function TopBar({ title, onTitleChange, onToggleSidebar }: TopBarProps) {
     <div className="h-12 border-b border-border bg-background flex items-center justify-between px-4">
       {/* Left side - Page title and controls */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        {isEditingTitle ? (
-          <input
-            ref={inputRef}
-            value={tempTitle}
-            onChange={(e) => setTempTitle(e.target.value)}
-            onBlur={handleTitleSubmit}
-            onKeyDown={handleTitleKeyDown}
-            className="text-title-2 bg-transparent border-0 outline-none focus:bg-editor-focus rounded px-2 py-1 -mx-2 -my-1 max-w-md"
-          />
-        ) : (
-          <h1 
-            onClick={handleTitleClick}
-            className="text-title-2 text-text-primary cursor-pointer hover:bg-editor-hover rounded px-2 py-1 -mx-2 -my-1 transition-colors"
-          >
-            {title}
-          </h1>
+        {currentPage && (
+          <>
+            {isEditingTitle ? (
+              <input
+                ref={inputRef}
+                value={tempTitle}
+                onChange={(e) => setTempTitle(e.target.value)}
+                onBlur={handleTitleSubmit}
+                onKeyDown={handleTitleKeyDown}
+                className="text-title-2 bg-transparent border-0 outline-none focus:bg-editor-focus rounded px-2 py-1 -mx-2 -my-1 max-w-md"
+              />
+            ) : (
+              <h1 
+                onClick={handleTitleClick}
+                className="text-title-2 text-text-primary cursor-pointer hover:bg-editor-hover rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+              >
+                {currentPage.title}
+              </h1>
+            )}
+          </>
         )}
         
         {/* Page actions */}
