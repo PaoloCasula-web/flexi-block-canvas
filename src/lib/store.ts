@@ -16,8 +16,12 @@ const mockPages: Page[] = [
     ],
     createdAt: new Date(),
     updatedAt: new Date(),
+    lastViewedAt: new Date(),
     isPrivate: false,
-    isFavorite: true
+    isFavorite: true,
+    tags: ['tutorial', 'welcome'],
+    color: 'blue',
+    description: 'Learn how to use NoteCraft effectively'
   },
   {
     id: '2',
@@ -29,9 +33,12 @@ const mockPages: Page[] = [
     ],
     createdAt: new Date(),
     updatedAt: new Date(),
+    lastViewedAt: new Date(Date.now() - 3600000),
     parentId: '3',
     isPrivate: true,
-    isFavorite: false
+    isFavorite: false,
+    tags: ['personal', 'journal'],
+    color: 'green'
   },
   {
     id: '3',
@@ -40,8 +47,11 @@ const mockPages: Page[] = [
     content: [],
     createdAt: new Date(),
     updatedAt: new Date(),
+    lastViewedAt: new Date(Date.now() - 7200000),
     isPrivate: true,
-    isFavorite: false
+    isFavorite: false,
+    tags: ['personal'],
+    color: 'yellow'
   },
   {
     id: '4',
@@ -55,19 +65,25 @@ const mockPages: Page[] = [
     ],
     createdAt: new Date(),
     updatedAt: new Date(),
+    lastViewedAt: new Date(Date.now() - 1800000),
     parentId: '3',
     isPrivate: true,
-    isFavorite: false
+    isFavorite: false,
+    tags: ['work', 'ideas', 'ai'],
+    color: 'purple'
   }
 ];
 
 interface AppStore extends AppState {
   // Pages
   setCurrentPage: (pageId: string) => void;
+  updatePageLastViewed: (pageId: string) => void;
   createPage: (title: string, parentId?: string) => string;
   deletePage: (pageId: string) => void;
   updatePageTitle: (pageId: string, title: string) => void;
   updatePageIcon: (pageId: string, icon: string) => void;
+  updatePageTags: (pageId: string, tags: string[]) => void;
+  updatePageColor: (pageId: string, color: string) => void;
   togglePageFavorite: (pageId: string) => void;
   
   // Blocks
@@ -95,18 +111,43 @@ export const useStore = create<AppStore>((set, get) => ({
   sidebarCollapsed: false,
 
   // Pages
-  setCurrentPage: (pageId: string) => set({ currentPageId: pageId }),
+  setCurrentPage: (pageId: string) =>
+    set((state) => {
+      // Update last viewed time
+      const updatedPages = state.pages.map(page =>
+        page.id === pageId 
+          ? { ...page, lastViewedAt: new Date() }
+          : page
+      );
+      return { 
+        currentPageId: pageId,
+        pages: updatedPages
+      };
+    }),
+
+  updatePageLastViewed: (pageId: string) =>
+    set((state) => ({
+      pages: state.pages.map(page =>
+        page.id === pageId 
+          ? { ...page, lastViewedAt: new Date() }
+          : page
+      )
+    })),
   
   createPage: (title: string, parentId?: string) => {
     const newPage: Page = {
       id: Date.now().toString(),
       title: title || 'Untitled',
+      icon: '📄',
       content: [{ id: Date.now().toString() + '_b1', type: 'text', content: '' }],
       createdAt: new Date(),
       updatedAt: new Date(),
+      lastViewedAt: new Date(),
       parentId,
       isPrivate: !!parentId,
-      isFavorite: false
+      isFavorite: false,
+      tags: [],
+      color: ''
     };
     
     set(state => ({ 
@@ -146,6 +187,26 @@ export const useStore = create<AppStore>((set, get) => ({
       pages: state.pages.map(p => 
         p.id === pageId 
           ? { ...p, icon, updatedAt: new Date() }
+          : p
+      )
+    }));
+  },
+
+  updatePageTags: (pageId: string, tags: string[]) => {
+    set(state => ({
+      pages: state.pages.map(p => 
+        p.id === pageId 
+          ? { ...p, tags, updatedAt: new Date() }
+          : p
+      )
+    }));
+  },
+
+  updatePageColor: (pageId: string, color: string) => {
+    set(state => ({
+      pages: state.pages.map(p => 
+        p.id === pageId 
+          ? { ...p, color, updatedAt: new Date() }
           : p
       )
     }));

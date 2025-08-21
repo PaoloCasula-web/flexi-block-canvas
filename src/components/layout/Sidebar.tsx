@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { 
-  ChevronDown, 
-  ChevronRight, 
-  Search, 
   Plus, 
   Star, 
   Share, 
   Lock,
+  ChevronRight,
+  ChevronDown,
   MoreHorizontal,
-  PanelLeft,
+  Heart,
   Trash,
-  Edit3
+  PanelLeft,
+  Hash,
+  BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useStore } from "@/lib/store";
 import { Page } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { EnhancedSearch } from "./EnhancedSearch";
+import { RecentPages } from "./RecentPages";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +39,8 @@ function PageTreeItem({ page, level = 0 }: { page: Page; level?: number }) {
     getPageChildren, 
     deletePage, 
     togglePageFavorite,
-    createPage
+    createPage,
+    updatePageLastViewed
   } = useStore();
   
   const [isExpanded, setIsExpanded] = useState(level === 0);
@@ -46,6 +50,7 @@ function PageTreeItem({ page, level = 0 }: { page: Page; level?: number }) {
 
   const handlePageSelect = () => {
     setCurrentPage(page.id);
+    updatePageLastViewed(page.id);
   };
 
   const handleToggleExpand = (e: React.MouseEvent) => {
@@ -102,6 +107,17 @@ function PageTreeItem({ page, level = 0 }: { page: Page; level?: number }) {
           {page.title}
         </span>
         
+        {page.tags && page.tags.length > 0 && (
+          <div className="flex gap-1 ml-2">
+            {page.tags.slice(0, 2).map(tag => (
+              <Hash key={tag} className="w-3 h-3 text-text-secondary opacity-60" />
+            ))}
+            {page.tags.length > 2 && (
+              <span className="text-xs text-text-secondary">+{page.tags.length - 2}</span>
+            )}
+          </div>
+        )}
+        
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           {page.isFavorite && (
             <Star className="h-3 w-3 text-yellow-500 fill-current" />
@@ -155,20 +171,21 @@ function PageTreeItem({ page, level = 0 }: { page: Page; level?: number }) {
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { 
     pages, 
-    searchQuery, 
-    setSearchQuery, 
-    getFilteredPages, 
     createPage, 
-    setCurrentPage 
+    deletePage, 
+    togglePageFavorite: toggleFavorite, 
+    setCurrentPage, 
+    getCurrentPage,
+    getFilteredPages,
+    updatePageLastViewed
   } = useStore();
   
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const currentPage = getCurrentPage();
   const filteredPages = getFilteredPages();
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setLocalSearchQuery(query);
-    setSearchQuery(query);
+  const handlePageClick = (pageId: string) => {
+    setCurrentPage(pageId);
+    updatePageLastViewed(pageId);
   };
 
   const handleCreatePage = () => {
@@ -206,32 +223,27 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   return (
     <div className="w-60 border-r border-sidebar-border bg-sidebar flex flex-col animate-slide-in-right">
-      {/* Header */}
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-text-primary">NoteCraft</h2>
-          <Button 
-            variant="ghost" 
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            <h1 className="text-title-2 font-semibold text-text-primary">NoteCraft</h1>
+          </div>
+          <Button
+            variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="h-6 w-6 hover:bg-sidebar-hover"
-            title="Toggle sidebar (Ctrl+B)"
+            className="h-6 w-6 hover:bg-sidebar-hover transition-colors"
           >
-            <PanelLeft className="h-4 w-4" />
+            <PanelLeft className="h-4 w-4 text-text-secondary" />
           </Button>
         </div>
-        
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-tertiary" />
-          <Input
-            placeholder="Search pages... (Ctrl+K)"
-            value={localSearchQuery}
-            onChange={handleSearch}
-            className="pl-9 h-8 bg-surface-secondary border-0 focus:bg-surface-tertiary"
-          />
-        </div>
-      </div>
+
+        {/* Enhanced Search */}
+        <EnhancedSearch />
+
+        {/* Recent Pages */}
+        <RecentPages />
 
       {/* Navigation Sections */}
       <div className="flex-1 overflow-auto p-2">
@@ -281,9 +293,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         )}
 
         {/* Empty state */}
-        {filteredPages.length === 0 && searchQuery && (
+        {filteredPages.length === 0 && (
           <div className="text-center py-8 text-text-secondary">
-            <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No pages found</p>
             <p className="text-xs">Try a different search term</p>
           </div>

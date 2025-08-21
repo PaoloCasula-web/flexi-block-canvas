@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
-import { TopBar } from "./TopBar";
+import { EnhancedTopBar } from "./EnhancedTopBar";
 import { ContentEditor } from "./ContentEditor";
 import { useStore } from "@/lib/store";
 import { CommandPalette } from "../editor/CommandPalette";
@@ -42,8 +42,8 @@ export function AppLayout() {
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <TopBar 
+        {/* Enhanced Top Bar */}
+        <EnhancedTopBar
           currentPage={currentPage}
           onToggleSidebar={toggleSidebar}
         />

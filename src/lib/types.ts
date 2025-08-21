@@ -5,9 +5,14 @@ export interface Page {
   content: Block[];
   createdAt: Date;
   updatedAt: Date;
+  lastViewedAt?: Date;
   parentId?: string;
   isPrivate: boolean;
   isFavorite: boolean;
+  tags: string[];
+  color?: string;
+  coverImage?: string;
+  description?: string;
 }
 
 export interface Block {
