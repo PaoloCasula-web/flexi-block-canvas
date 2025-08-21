@@ -2,41 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Notion-inspired Design System - Clean, minimal, productive */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    /* Core App Colors */
+    --background: 255 255% 100%;
+    --foreground: 220 9% 9%;
+    
+    /* Surfaces */
+    --surface: 255 255% 100%;
+    --surface-secondary: 220 13% 97%;
+    --surface-tertiary: 220 7% 93%;
+    
+    /* Interactive Elements */
+    --primary: 258 90% 66%;
+    --primary-hover: 258 90% 60%;
+    --primary-foreground: 255 255% 100%;
+    
+    /* Text Hierarchy */
+    --text-primary: 220 9% 9%;
+    --text-secondary: 220 9% 46%;
+    --text-tertiary: 220 9% 65%;
+    --text-placeholder: 220 9% 75%;
+    
+    /* Borders & Dividers */
+    --border: 220 13% 91%;
+    --border-light: 220 13% 95%;
+    --divider: 220 13% 91%;
+    
+    /* Sidebar Specific */
+    --sidebar-bg: 255 255% 100%;
+    --sidebar-hover: 220 13% 97%;
+    --sidebar-active: 258 90% 97%;
+    --sidebar-border: 220 13% 91%;
+    
+    /* Editor Elements */
+    --editor-bg: 255 255% 100%;
+    --editor-hover: 220 13% 97%;
+    --editor-focus: 258 90% 97%;
+    
+    /* Shadows */
+    --shadow-soft: 220 43% 11% / 0.06;
+    --shadow-medium: 220 43% 11% / 0.1;
+    --shadow-strong: 220 43% 11% / 0.15;
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Spacing & Typography */
+    --content-width: 800px;
+    --sidebar-width: 240px;
+    --radius: 6px;
+    --radius-sm: 4px;
 
     --sidebar-background: 0 0% 98%;
 
@@ -92,14 +111,56 @@ All colors MUST be HSL.
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  
+  /* Typography Scale */
+  .text-title-1 { @apply text-3xl font-bold leading-tight tracking-tight; }
+  .text-title-2 { @apply text-2xl font-semibold leading-tight; }
+  .text-title-3 { @apply text-xl font-semibold leading-snug; }
+  .text-body { @apply text-base leading-relaxed; }
+  .text-body-sm { @apply text-sm leading-normal; }
+  .text-caption { @apply text-xs leading-normal; }
+  
+  /* Interactive States */
+  .interactive-hover {
+    @apply transition-colors duration-[var(--transition-fast)] hover:bg-[hsl(var(--editor-hover))];
+  }
+  
+  .interactive-focus {
+    @apply transition-all duration-[var(--transition-fast)] focus:bg-[hsl(var(--editor-focus))] focus:outline-none;
+  }
+  
+  /* Content Blocks */
+  .block-content {
+    @apply w-full min-h-[1.5rem] py-1 px-0 border-0 outline-none resize-none bg-transparent;
+    @apply text-[hsl(var(--text-primary))] placeholder:text-[hsl(var(--text-placeholder))];
+    @apply leading-relaxed;
+  }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(var(--border))];
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    @apply font-['-apple-system','BlinkMacSystemFont','Segoe_UI','Roboto','sans-serif'];
+  }
+  
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    @apply w-1;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[hsl(var(--border))] rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-[hsl(var(--text-tertiary))];
   }
 }
